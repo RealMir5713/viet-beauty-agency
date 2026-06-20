@@ -60,7 +60,6 @@ const businessTypes = [
   "Hair salon",
   "Beauty salon",
   "Massage thư giãn",
-  "Dịch vụ chăm sóc sắc đẹp không xâm lấn"
 ];
 
 const processSteps = [
