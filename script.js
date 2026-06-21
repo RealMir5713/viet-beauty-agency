@@ -176,15 +176,6 @@ const renderProcess = () => {
   });
 };
 
-const renderMetrics = () => {
-  const container = document.querySelector("#metric-list");
-  metrics.forEach((metric) => {
-    const card = createElement("article", "metric-card");
-    card.append(createElement("strong", "", metric), createElement("p", "", "Được ghi nhận để biết chiến dịch đang tạo ra kết quả ở bước nào."));
-    container.appendChild(card);
-  });
-};
-
 const renderPilot = () => {
   const container = document.querySelector("#pilot-list");
   pilotItems.forEach((item) => {
