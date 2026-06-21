@@ -264,6 +264,8 @@ const setFieldError = (field, message) => {
 const setupForm = () => {
   const form = document.querySelector("#booking-form");
   const success = document.querySelector("#form-success");
+  const submit = form.querySelector(".form-submit");
+  const submitText = submit.textContent;
 
   const validateField = (field) => {
     const validator = validators[field.name];
@@ -280,9 +282,10 @@ const setupForm = () => {
     });
   });
 
-  form.addEventListener("submit", (event) => {
+  form.addEventListener("submit", async (event) => {
     event.preventDefault();
     success.classList.remove("is-visible");
+    success.classList.remove("is-error");
 
     const fields = Array.from(form.querySelectorAll("input, select, textarea"));
     const validationResults = fields.map(validateField);
@@ -295,11 +298,32 @@ const setupForm = () => {
     }
 
     const payload = Object.fromEntries(new FormData(form).entries());
-    form.dataset.latestSubmission = JSON.stringify(payload);
-    form.reset();
-    fields.forEach((field) => setFieldError(field, ""));
-    success.textContent = "Cảm ơn bạn! Viet Beauty Agency đã nhận được thông tin và sẽ liên hệ lại trong thời gian sớm nhất.";
-    success.classList.add("is-visible");
+    submit.disabled = true;
+    submit.textContent = "Đang gửi...";
+
+    try {
+      const response = await fetch(form.dataset.endpoint || "/api/lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      const result = await response.json().catch(() => ({}));
+
+      if (!response.ok || !result.ok) {
+        throw new Error(result.message || "SUBMIT_FAILED");
+      }
+
+      form.reset();
+      fields.forEach((field) => setFieldError(field, ""));
+      success.textContent = result.message || "Cảm ơn bạn! VBeauty Agency đã nhận được thông tin và sẽ liên hệ lại trong thời gian sớm nhất.";
+      success.classList.add("is-visible");
+    } catch (error) {
+      success.textContent = "Xin lỗi, biểu mẫu chưa gửi được. Vui lòng thử lại hoặc liên hệ trực tiếp qua điện thoại/Zalo.";
+      success.classList.add("is-visible", "is-error");
+    } finally {
+      submit.disabled = false;
+      submit.textContent = submitText;
+    }
   });
 };
 

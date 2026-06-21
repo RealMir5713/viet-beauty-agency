@@ -806,6 +806,17 @@ textarea:focus {
   display: block;
 }
 
+.form-success.is-error {
+  color: #8f2626;
+  background: rgba(200, 85, 85, 0.12);
+}
+
+.form-submit:disabled {
+  cursor: wait;
+  opacity: 0.72;
+  transform: none;
+}
+
 .faq-list {
   display: grid;
   gap: 12px;
