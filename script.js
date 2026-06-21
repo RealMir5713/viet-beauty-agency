@@ -33,11 +33,26 @@ const messages = {
 
 const getLang = () => document.documentElement.dataset.lang || "vi";
 
+const syncLanguageFields = (lang) => {
+  const title = document.querySelector("title[data-vi][data-en]");
+  if (title) document.title = title.dataset[lang] || title.textContent;
+
+  document.querySelectorAll("option[data-vi][data-en]").forEach((option) => {
+    option.textContent = option.dataset[lang] || option.textContent;
+  });
+
+  document.querySelectorAll("[data-placeholder-vi][data-placeholder-en]").forEach((field) => {
+    const value = lang === "en" ? field.dataset.placeholderEn : field.dataset.placeholderVi;
+    if (value) field.placeholder = value;
+  });
+};
+
 const setLanguage = (lang) => {
   const nextLang = lang === "en" ? "en" : "vi";
   document.documentElement.dataset.lang = nextLang;
   document.documentElement.lang = nextLang;
   localStorage.setItem("vbeauty-lang", nextLang);
+  syncLanguageFields(nextLang);
   document.querySelectorAll("[data-set-lang]").forEach((button) => {
     button.setAttribute("aria-pressed", String(button.dataset.setLang === nextLang));
   });
@@ -136,6 +151,10 @@ const setupForm = () => {
 
     const lang = getLang();
     const payload = Object.fromEntries(new FormData(form).entries());
+    form.querySelectorAll("select").forEach((select) => {
+      const selected = select.options[select.selectedIndex];
+      payload[select.name] = selected?.textContent.trim() || select.value;
+    });
     payload.language = lang;
 
     submit.disabled = true;
