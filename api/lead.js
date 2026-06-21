@@ -40,15 +40,36 @@ function base64Url(input) {
     .replace(/\//g, "_");
 }
 
-function normalizePrivateKey(privateKey) {
-  return privateKey.replace(/\\n/g, "\n");
+function getGooglePrivateKey() {
+  let privateKey = process.env.GOOGLE_PRIVATE_KEY || "";
+
+  if (process.env.GOOGLE_PRIVATE_KEY_B64) {
+    privateKey = Buffer.from(process.env.GOOGLE_PRIVATE_KEY_B64, "base64").toString("utf8");
+  }
+
+  privateKey = privateKey.trim();
+
+  if (
+    (privateKey.startsWith('"') && privateKey.endsWith('"')) ||
+    (privateKey.startsWith("'") && privateKey.endsWith("'"))
+  ) {
+    privateKey = privateKey.slice(1, -1);
+  }
+
+  privateKey = privateKey.replace(/\\n/g, "\n").trim();
+
+  if (!privateKey.includes("-----BEGIN PRIVATE KEY-----")) {
+    throw new Error("Google private key is not in PEM format.");
+  }
+
+  return privateKey;
 }
 
 async function getGoogleAccessToken() {
   const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
-  const privateKey = process.env.GOOGLE_PRIVATE_KEY;
+  const privateKey = getGooglePrivateKey();
 
-  if (!email || !privateKey) {
+  if (!email) {
     throw new Error("Missing Google service account environment variables.");
   }
 
@@ -66,7 +87,7 @@ async function getGoogleAccessToken() {
   const signature = crypto
     .createSign("RSA-SHA256")
     .update(unsignedJwt)
-    .sign(normalizePrivateKey(privateKey));
+    .sign(privateKey);
   const assertion = `${unsignedJwt}.${base64Url(signature)}`;
 
   const response = await fetch("https://oauth2.googleapis.com/token", {
