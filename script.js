@@ -78,7 +78,6 @@ const metrics = [
   "Số lịch hẹn được đặt",
   "Số khách đến thật",
   "Doanh thu ghi nhận từ lead",
-  "Dịch vụ chốt tốt nhất"
 ];
 
 const pilotItems = [
@@ -178,9 +177,11 @@ const renderProcess = () => {
 
 const renderMetrics = () => {
   const container = document.querySelector("#metric-list");
+  container.innerHTML = "";
+
   metrics.forEach((metric) => {
     const card = createElement("article", "metric-card");
-    card.append(createElement("strong", "", metric), createElement("p", "", "Được ghi nhận để biết chiến dịch đang tạo ra kết quả ở bước nào."));
+    card.append(createElement("strong", "", metric));
     container.appendChild(card);
   });
 };
