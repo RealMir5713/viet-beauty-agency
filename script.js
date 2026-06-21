@@ -125,6 +125,7 @@ const createElement = (tag, className, text) => {
 
 const renderProblems = () => {
   const container = document.querySelector("#problem-list");
+  if (!container) return;
   problems.forEach((problem, index) => {
     const card = createElement("article", "info-card");
     const icon = createElement("span", "card-icon", String(index + 1).padStart(2, "0"));
@@ -137,6 +138,7 @@ const renderProblems = () => {
 
 const renderSolutionSteps = () => {
   const container = document.querySelector("#solution-steps");
+  if (!container) return;
   solutionSteps.forEach((step, index) => {
     const item = createElement("article", "step-item");
     const number = createElement("span", "step-number", String(index + 1));
@@ -150,6 +152,7 @@ const renderSolutionSteps = () => {
 
 const renderServices = () => {
   const container = document.querySelector("#service-list");
+  if (!container) return;
   services.forEach((service) => {
     const card = createElement("article", "service-card");
     card.append(createElement("strong", "", service.title), createElement("p", "", service.text));
@@ -159,6 +162,7 @@ const renderServices = () => {
 
 const renderBusinessTypes = () => {
   const container = document.querySelector("#business-list");
+  if (!container) return;
   businessTypes.forEach((item) => {
     container.appendChild(createElement("div", "check-item", item));
   });
@@ -166,6 +170,7 @@ const renderBusinessTypes = () => {
 
 const renderProcess = () => {
   const container = document.querySelector("#process-list");
+  if (!container) return;
   processSteps.forEach((step, index) => {
     const item = createElement("article", "process-item");
     const number = createElement("span", "process-number", String(index + 1));
@@ -177,6 +182,7 @@ const renderProcess = () => {
 
 const renderMetrics = () => {
   const container = document.querySelector("#metric-list");
+  if (!container) return;
   container.innerHTML = "";
 
   metrics.forEach((metric) => {
@@ -188,6 +194,7 @@ const renderMetrics = () => {
 
 const renderPilot = () => {
   const container = document.querySelector("#pilot-list");
+  if (!container) return;
   pilotItems.forEach((item) => {
     container.appendChild(createElement("li", "", item));
   });
@@ -195,6 +202,7 @@ const renderPilot = () => {
 
 const renderFaq = () => {
   const container = document.querySelector("#faq-list");
+  if (!container) return;
   faqs.forEach((faq, index) => {
     const item = createElement("article", "faq-item");
     if (index === 0) item.classList.add("is-open");
@@ -219,6 +227,7 @@ const renderFaq = () => {
 const setupNavigation = () => {
   const toggle = document.querySelector(".nav-toggle");
   const nav = document.querySelector("#main-nav");
+  if (!toggle || !nav) return;
 
   toggle.addEventListener("click", () => {
     const isOpen = document.body.classList.toggle("nav-open");
@@ -264,8 +273,10 @@ const setFieldError = (field, message) => {
 
 const setupForm = () => {
   const form = document.querySelector("#booking-form");
+  if (!form) return;
   const success = document.querySelector("#form-success");
   const submit = form.querySelector(".form-submit");
+  if (!success || !submit) return;
   const submitText = submit.textContent;
 
   const validateField = (field) => {
